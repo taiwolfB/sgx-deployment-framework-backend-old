@@ -45,23 +45,24 @@ public class TestController {
 //
 //        System.out.println(process.getOutputStream().toString());
 
-        String Script_Path = resolvePythonScriptPath("deploy_script.py");
-        ProcessBuilder Process_Builder = new
-                ProcessBuilder("python",Script_Path)
-                .inheritIO();
-
-        Process Demo_Process = Process_Builder.start();
-        Demo_Process.waitFor();
-
-        BufferedReader Buffered_Reader = new BufferedReader(
-                new InputStreamReader(
-                        Demo_Process.getInputStream()
-                ));
-        String Output_line = "";
-
-        while ((Output_line = Buffered_Reader.readLine()) != null) {
-            System.out.println(Output_line);
-        }
-        return "YES";
+//        String Script_Path = resolvePythonScriptPath("deploy_script.py");
+//        ProcessBuilder Process_Builder = new
+//                ProcessBuilder("python",Script_Path)
+//                .inheritIO();
+//
+//        Process Demo_Process = Process_Builder.start();
+//        Demo_Process.waitFor();
+//
+//        BufferedReader Buffered_Reader = new BufferedReader(
+//                new InputStreamReader(
+//                        Demo_Process.getInputStream()
+//                ));
+//        String Output_line = "";
+//
+//        while ((Output_line = Buffered_Reader.readLine()) != null) {
+//            System.out.println(Output_line);
+//        }
+//        return "YES";
+        return "TEST";
     }
 }

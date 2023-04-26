@@ -1,0 +1,7 @@
+To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code CM8NJ9WJX to authenticate.
+ERROR: AADSTS70016: OAuth 2.0 device flow error. Authorization is pending. Continue polling.
+Trace ID: 627cebdd-b30b-43aa-82a4-2209aaf51600
+Correlation ID: 529120fc-f038-4d34-ab33-8b75e754f042
+Timestamp: 2023-04-26 15:24:38Z
+Interactive authentication is needed. Please run:
+az login
