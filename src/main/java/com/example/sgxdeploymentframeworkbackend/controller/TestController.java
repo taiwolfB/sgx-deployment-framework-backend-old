@@ -4,7 +4,7 @@ import com.azure.core.credential.TokenCredential;
 import com.azure.core.management.AzureEnvironment;
 import com.azure.core.management.profile.AzureProfile;
 import com.azure.identity.*;
-import com.azure.resourcemanager.subscription.SubscriptionManager;
+//import com.azure.resourcemanager.subscription.SubscriptionManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
