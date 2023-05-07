@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Data
 public class DeploymentProperties {
 
+    private String userPrincipalName;
     private String loggedInUser;
     private String subscriptionId;
     private String tenantId;

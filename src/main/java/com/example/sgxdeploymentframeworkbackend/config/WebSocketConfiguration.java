@@ -1,6 +1,8 @@
 package com.example.sgxdeploymentframeworkbackend.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -12,6 +14,9 @@ import org.springframework.web.socket.config.annotation.WebSocketTransportRegist
 @EnableWebSocketMessageBroker
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
 
+    @Autowired
+    private Environment environment;
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.enableSimpleBroker("/azure");
@@ -20,7 +25,10 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("device-code-provider")
-                .setAllowedOrigins("http://localhost:8083")
+                .setAllowedOrigins(environment.getProperty("frontend.server"))
+                .withSockJS();
+        registry.addEndpoint("deployment-logs")
+                .setAllowedOrigins(environment.getProperty("frontend.server"))
                 .withSockJS();
     }
 

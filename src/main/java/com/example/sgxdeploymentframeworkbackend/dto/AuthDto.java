@@ -11,4 +11,6 @@ public class AuthDto {
 
     private String subscriptionId;
     private String tenantId;
+    private String loggedInUser;
+    private String userPrincipalName;
 }

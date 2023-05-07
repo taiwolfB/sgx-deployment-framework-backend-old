@@ -18,4 +18,23 @@ RUN sleep 10
 COPY --from=builder /var/backend/spring-boot-loader/ ./
 COPY --from=builder /var/backend/application/ ./
 EXPOSE 8082
+# ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher","-XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms512m -Xmx512m -XX:+UseG1GC -XX:+UseSerialGC -Xss512k -XX:MaxRAM=72m"]
+RUN apt-get update
+RUN mkdir -p /var/log/supervisor
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./sgx-deployment-framework-remote-attestation ./
+SHELL ["/bin/bash", "-c"]
+RUN yes | apt-get install autotools-dev automake libssl-dev wget net-tools supervisor
+RUN yes yes | apt-get install build-essential git -y -q
+RUN wget https://www.openssl.org/source/openssl-1.1.1i.tar.gz
+RUN tar xf openssl-1.1.1i.tar.gz
+#RUN cd openssl-1.1.1i
+RUN ./openssl-1.1.1i/config --prefix=/opt/openssl/1.1.1i --openssldir=/opt/openssl/1.1.1i
+RUN make
+RUN make install
+RUN sed -i -e 's/\r$//' "./run-server"
+RUN sed -i -e 's/\r$//' "./settings"
+RUN sed -i -e 's/\r$//' "./policy"
+EXPOSE 8085
 ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher","-XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms512m -Xmx512m -XX:+UseG1GC -XX:+UseSerialGC -Xss512k -XX:MaxRAM=72m"]
+# CMD ["/bin/supervsiord"]
