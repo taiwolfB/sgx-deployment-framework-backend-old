@@ -36,8 +36,9 @@ public class WebConfig implements WebMvcConfigurer {
                 ));
         String ipAddress = "";
         while ((ipAddress = bufferedReader.readLine()) != null) {
-            System.out.println(ipAddress);
+            break;
         }
+        System.out.println(ipAddress);
         bufferedReader.close();
         registry.addMapping("/**")
                 .allowedOrigins(environment.getProperty("frontend.server"), ipAddress)
