@@ -32,9 +32,9 @@ RUN tar xf openssl-1.1.1i.tar.gz
 RUN ./openssl-1.1.1i/config --prefix=/opt/openssl/1.1.1i --openssldir=/opt/openssl/1.1.1i
 RUN make
 RUN make install
-# RUN sed -i -e 's/\r$//' "./run-server"
-# RUN sed -i -e 's/\r$//' "./settings"
-# RUN sed -i -e 's/\r$//' "./policy"
+ RUN sed -i -e 's/\r$//' "./run-server"
+ RUN sed -i -e 's/\r$//' "./settings"
+ RUN sed -i -e 's/\r$//' "./policy"
 EXPOSE 8085
 # ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher","-XX:+UseContainerSupport -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1 -Xms512m -Xmx512m -XX:+UseG1GC -XX:+UseSerialGC -Xss512k -XX:MaxRAM=72m"]
 CMD ["/usr/bin/supervisord"]

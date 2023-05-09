@@ -24,6 +24,7 @@ import reactor.core.publisher.Mono;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -313,14 +314,18 @@ public class DeploymentService {
             log.info("Initialize script result: ");
             runCommandResult.value().forEach(l -> log.info(l.message()));
 
-            RunCommandInput startServerCommand = new RunCommandInput()
-                    .withCommandId("RunShellScript")
-                    .withScript(createStartServerScript());
-            RunCommandResult startServerCommandResult = azureResourceManager
-                    .virtualMachines()
-                    .runCommand(resourceGroup.name(), virtualMachine.name(), startServerCommand);
+//            RunCommandInput startServerCommand = new RunCommandInput()
+//                    .withCommandId("RunShellScript")
+//                    .withScript(createStartServerScript());
+//            RunCommandResult startServerCommandResult = azureResourceManager
+//                    .virtualMachines()
+//                    .runCommand(resourceGroup.name(), virtualMachine.name(), startServerCommand);
 // SERVER HAS TO RUN ON THE DOCKER CONTAINERS, CLIENT HAS TO RUN ON THE VM
             // RUN FIRST THE SERVER IN DOCKER THEN RUN THE CLIENT IN VM SUCH THAT THE PROCESS DOESNT HANG
+            InetAddress thisIp = InetAddress.getLocalHost();
+            webSocketDeploymentLogDto.setMessage("Public IP Address of backend " + thisIp.getHostAddress().toString());
+            webSocketListener.pushSystemStatusToDeploymentLogsWebSocket(webSocketDeploymentLogDto);
+
             responseDeploymentDto.setMessage("Deployment success!");
             responseDeploymentDto.setHttpCode(200);
         } catch(Exception ex) {
@@ -332,7 +337,6 @@ public class DeploymentService {
         return responseDeploymentDto;
     }
 
-
     private String resolveFilePath(String path){
         File file = new File(path);
         System.out.println(file.getAbsolutePath());
@@ -341,20 +345,26 @@ public class DeploymentService {
 
     public AuthResponseDto checkAuthorization(AuthDto authDto) {
         AuthResponseDto authResponseDto =  new AuthResponseDto();
-        if (authDto.getLoggedInUser().equals(deploymentProperties.getLoggedInUser()) &&
-                authDto.getUserPrincipalName().equals(deploymentProperties.getUserPrincipalName()) &&
-                azureResourceManager != null) {
-            authResponseDto.setHttpCode(200);
-            authResponseDto.setMessage("The user is authorized to perform the requested actions.");
-            log.info("The user "
-                    + authDto.getLoggedInUser()
-                    + "is authorized to perform the requested actions.");
-        } else {
-            authResponseDto.setHttpCode(401);
+        try {
+            if (authDto.getLoggedInUser().equals(deploymentProperties.getLoggedInUser()) &&
+                    authDto.getUserPrincipalName().equals(deploymentProperties.getUserPrincipalName()) &&
+                    azureResourceManager != null) {
+                authResponseDto.setHttpCode(200);
+                authResponseDto.setMessage("The user is authorized to perform the requested actions.");
+                log.info("The user "
+                        + authDto.getLoggedInUser()
+                        + "is authorized to perform the requested actions.");
+            } else {
+                authResponseDto.setHttpCode(401);
+                authResponseDto.setMessage("The user is NOT authorized to perform the requested actions.");
+                log.error("The user "
+                        + authDto.getLoggedInUser()
+                        + " is NOT authorized to perform the requested actions.");
+            }
+        } catch(Exception ex) {
             authResponseDto.setMessage("The user is NOT authorized to perform the requested actions.");
-            log.error("The user "
-                    + authDto.getLoggedInUser()
-                    + " is NOT authorized to perform the requested actions.");
+            authResponseDto.setHttpCode(401);
+            log.error(ex.getMessage());
         }
         return authResponseDto;
     }
